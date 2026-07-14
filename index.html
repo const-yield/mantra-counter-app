@@ -32,7 +32,7 @@
 body {
   background: var(--page); color: var(--ink-1);
   font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
-  font-size: 15px; padding: 14px 12px 90px; max-width: 560px; margin: 0 auto;
+  font-size: 15px; padding: 14px 12px 96px; max-width: 560px; margin: 0 auto;
 }
 header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
 h1 { font-size: 17px; font-weight: 650; }
@@ -52,55 +52,79 @@ h1 { font-size: 17px; font-weight: 650; }
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 12px; padding: 12px 14px; margin-bottom: 10px;
 }
-.group-head {
-  display: flex; align-items: baseline; gap: 6px;
-  padding: 12px 4px 6px; cursor: pointer; user-select: none;
-}
-.group-head .chev { color: var(--ink-3); font-size: 11px; width: 12px; }
-.group-head .g-name { font-size: 13px; font-weight: 650; color: var(--ink-2); letter-spacing: 0.02em; }
-.group-head .g-sub { margin-left: auto; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.group-head .g-sub b { color: var(--ink-2); }
+.cat-card { cursor: pointer; }
+.cat-card:active { transform: scale(0.99); }
 .cat-head { display: flex; justify-content: space-between; align-items: baseline; }
-.cat-name { font-weight: 600; }
+.cat-name { font-weight: 600; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.badge {
+  font-size: 11px; font-weight: 500; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 6px; padding: 0 6px;
+  white-space: nowrap; flex: none;
+}
+.cat-cum { font-size: 12px; color: var(--ink-3); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .cat-total { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 14px; white-space: nowrap; }
 .cat-total b { color: var(--ink-1); font-size: 16px; }
-.chips { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.cat-total .chev { color: var(--ink-3); margin-left: 6px; }
 button {
   font: inherit; border: none; cursor: pointer; border-radius: 10px;
-  padding: 10px 0; min-width: 72px; font-weight: 600; font-size: 15px;
+  padding: 10px 0; font-weight: 600; font-size: 15px;
   background: var(--chip); color: var(--chip-ink);
-  flex: 1 1 72px;
 }
 button:active { transform: scale(0.96); opacity: 0.85; }
-button.custom { background: transparent; border: 1px solid var(--hairline); color: var(--ink-2); flex: 0 0 52px; min-width: 52px; }
-.custom-row { display: none; gap: 8px; margin-top: 8px; }
-.custom-row.open { display: flex; }
-.custom-row input, .setup input {
-  flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 9px 12px;
-  border: 1px solid var(--hairline); border-radius: 10px;
-  background: var(--surface); color: var(--ink-1);
-}
-.custom-row button { flex: 0 0 88px; background: var(--accent); color: var(--accent-ink); }
-#recentCard h2, #summaryCard h2, .setup h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px; }
-.recent-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); padding: 3px 0; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px; }
+.recent-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--ink-2); padding: 2px 0; }
+.recent-right { display: flex; align-items: center; gap: 10px; }
 .recent-row .t { color: var(--ink-3); }
-#undoBtn { width: 100%; margin-top: 8px; background: transparent; border: 1px solid var(--hairline); color: var(--ink-2); font-weight: 500; }
+.row-del {
+  background: transparent; border: 1px solid var(--hairline); color: var(--ink-3);
+  font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 7px;
+}
+.row-del.armed { border-color: #d03b3b; color: #d03b3b; }
 #summaryText {
   width: 100%; font: inherit; font-size: 13px; line-height: 1.6;
   background: transparent; color: var(--ink-2); border: none; resize: none;
 }
 .foot-actions { display: flex; gap: 8px; margin-top: 8px; }
-.foot-actions button { background: var(--accent); color: var(--accent-ink); }
+.foot-actions button { flex: 1; background: var(--accent); color: var(--accent-ink); }
 .setup label { display: block; font-size: 13px; color: var(--ink-2); margin: 10px 0 4px; }
 .setup input { width: 100%; }
 .setup .go { width: 100%; margin-top: 14px; background: var(--accent); color: var(--accent-ink); }
 .setup .hint { font-size: 12px; color: var(--ink-3); margin-top: 10px; line-height: 1.6; }
 #settingsBtn {
-  background: transparent; border: none; color: var(--ink-3); flex: none;
-  min-width: 0; padding: 0 0 0 10px; font-size: 16px; font-weight: 400;
+  background: transparent; border: none; color: var(--ink-3);
+  padding: 0 0 0 10px; font-size: 16px; font-weight: 400;
+}
+/* 报数页 */
+.input-field, .setup input {
+  width: 100%; min-width: 0; font: inherit; font-size: 16px; padding: 10px 12px;
+  border: 1px solid var(--hairline); border-radius: 10px;
+  background: var(--surface); color: var(--ink-1);
+}
+.chip-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
+.cat-chip {
+  background: transparent; border: 1px solid var(--hairline); color: var(--ink-1);
+  border-radius: 18px; padding: 8px 14px; font-weight: 500; font-size: 14px;
+}
+.cat-chip.selected { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.quick-chips button { flex: 1 1 72px; min-width: 72px; }
+.input-actions { display: flex; gap: 10px; margin-top: 4px; }
+.input-actions .ghost { flex: 0 0 96px; background: transparent; border: 1px solid var(--hairline); color: var(--ink-2); font-weight: 500; }
+.input-actions #submitEntry { flex: 1; background: var(--accent); color: var(--accent-ink); font-size: 16px; letter-spacing: 0.3em; text-indent: 0.3em; }
+/* 底部固定报数按钮 */
+#fabBar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  max-width: 560px; margin: 0 auto;
+  padding: 18px 12px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--page) 65%, transparent);
+}
+#fabBar button {
+  width: 100%; background: var(--accent); color: var(--accent-ink);
+  padding: 13px 0; font-size: 16px; border-radius: 12px; letter-spacing: 0.3em; text-indent: 0.3em;
 }
 #toast {
-  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+  position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%);
   background: var(--ink-1); color: var(--page); padding: 8px 16px;
   border-radius: 20px; font-size: 13px; display: none; z-index: 10; max-width: 90vw;
 }
@@ -128,13 +152,13 @@ button.custom { background: transparent; border: 1px solid var(--hairline); colo
   <div class="hint">部署方法见仓库里的 README。配置只保存在本机浏览器里,不会上传到任何地方。</div>
 </div>
 
+<!-- 主界面: 概览 -->
 <div id="main" class="hidden">
   <div id="cats"></div>
 
   <div class="card" id="recentCard" style="display:none">
-    <h2>今天最近几笔</h2>
+    <h2>今天最近几笔(✕ 可删除)</h2>
     <div id="recentList"></div>
-    <button id="undoBtn">撤销最后一笔</button>
   </div>
 
   <div class="card" id="summaryCard" style="display:none">
@@ -146,6 +170,29 @@ button.custom { background: transparent; border: 1px solid var(--hairline); colo
   </div>
 </div>
 
+<!-- 报数页: 输入集中在一处 -->
+<div id="inputView" class="hidden">
+  <div class="card">
+    <h2>记录时间(可修改,用于补报)</h2>
+    <input type="date" id="entryDate" class="input-field">
+  </div>
+  <div class="card">
+    <h2>报数功课</h2>
+    <div id="catChips" class="chip-cloud"></div>
+  </div>
+  <div class="card">
+    <h2>报数数值</h2>
+    <input type="number" id="entryCount" class="input-field" min="1" inputmode="numeric" placeholder="请输入数字,或点下面的常用数量">
+    <div id="quickChips" class="quick-chips"></div>
+  </div>
+  <div class="input-actions">
+    <button id="backBtn" class="ghost">返回</button>
+    <button id="submitEntry">报数</button>
+  </div>
+</div>
+
+<div id="fabBar" class="hidden"><button id="fabBtn">报数</button></div>
+
 <div id="toast"></div>
 
 <script>
@@ -156,12 +203,13 @@ function load(key, fallback) {
   try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
   catch (e) { return fallback; }
 }
-function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
 
 var cfg = load('bs_cfg', null);          // {url, token}
 var server = load('bs_server', null);    // 上次成功拉到的服务端状态
-var queue = load('bs_queue', []);        // 未同步的记数 [{id, cat, count, ts}]
+var queue = load('bs_queue', []);        // 未同步的记数 [{id, cat, count, ts, date}]
 var syncing = false;
+var selectedCat = null;
 
 function $(id) { return document.getElementById(id); }
 
@@ -198,6 +246,8 @@ function api(action, payload) {
 }
 
 // ---------- 状态合成: 服务端已同步 + 本地待同步 ----------
+function entryDate(q) { return q.date || dateKeyOf(q.ts); }
+
 function effective() {
   var today = todayKey();
   var totals = {};
@@ -205,13 +255,13 @@ function effective() {
     Object.keys(server.totals).forEach(function (k) { totals[k] = server.totals[k]; });
   }
   queue.forEach(function (q) {
-    if (dateKeyOf(q.ts) === today) totals[q.cat] = (totals[q.cat] || 0) + q.count;
+    if (entryDate(q) === today) totals[q.cat] = (totals[q.cat] || 0) + q.count;
   });
 
   var recent = [];
   for (var i = queue.length - 1; i >= 0 && recent.length < 6; i--) {
-    if (dateKeyOf(queue[i].ts) === today) {
-      recent.push({ time: timeOf(queue[i].ts), cat: queue[i].cat, count: queue[i].count, pending: true });
+    if (entryDate(queue[i]) === today) {
+      recent.push({ id: queue[i].id, time: timeOf(queue[i].ts), cat: queue[i].cat, count: queue[i].count, pending: true });
     }
   }
   if (server && server.date === today) {
@@ -219,7 +269,15 @@ function effective() {
       if (recent.length < 6) recent.push(r);
     });
   }
-  return { totals: totals, recent: recent, categories: (server && server.categories) || [] };
+
+  // 累计 = 服务端累计(历史基数+已同步) + 本地待同步
+  var cum = {};
+  if (server && server.cum) {
+    Object.keys(server.cum).forEach(function (k) { cum[k] = server.cum[k]; });
+  }
+  queue.forEach(function (q) { cum[q.cat] = (cum[q.cat] || 0) + q.count; });
+
+  return { totals: totals, recent: recent, cum: cum, categories: (server && server.categories) || [] };
 }
 
 // ---------- 渲染 ----------
@@ -243,6 +301,35 @@ function renderSyncBar() {
   }
 }
 
+function buildCard(c, s) {
+  var card = document.createElement('div'); card.className = 'card cat-card';
+  var todayCount = s.totals[c.name] || 0;
+
+  var head = document.createElement('div'); head.className = 'cat-head';
+  var name = document.createElement('div'); name.className = 'cat-name';
+  var nameText = document.createElement('span'); nameText.textContent = c.name;
+  name.appendChild(nameText);
+  if (todayCount > 0) {
+    var badge = document.createElement('span'); badge.className = 'badge';
+    badge.textContent = '已报数';
+    name.appendChild(badge);
+  }
+  var total = document.createElement('div'); total.className = 'cat-total';
+  var tb = document.createElement('b'); tb.textContent = todayCount.toLocaleString();
+  total.appendChild(document.createTextNode('今日 ')); total.appendChild(tb);
+  var chev = document.createElement('span'); chev.className = 'chev'; chev.textContent = '›';
+  total.appendChild(chev);
+  head.appendChild(name); head.appendChild(total);
+  card.appendChild(head);
+
+  var cum = document.createElement('div'); cum.className = 'cat-cum';
+  cum.textContent = '累计 ' + (s.cum[c.name] || 0).toLocaleString();
+  card.appendChild(cum);
+
+  card.onclick = function () { showInput(c.name); };
+  return card;
+}
+
 function render() {
   var s = effective();
   var today = todayKey();
@@ -260,89 +347,11 @@ function render() {
 
   renderSyncBar();
 
-  // 按「组别」列分组; 都没填组别时按原样平铺
-  var groupOrder = [];
-  var byGroup = {};
-  s.categories.forEach(function (c) {
-    var g = (c.group || '').trim();
-    if (!(g in byGroup)) { byGroup[g] = []; groupOrder.push(g); }
-    byGroup[g].push(c);
-  });
-  var grouped = groupOrder.some(function (g) { return g !== ''; });
-  groupOrder.sort(function (a, b) { return (a === '' ? 1 : 0) - (b === '' ? 1 : 0); }); // 未分组的排最后
-  var folds = load('bs_folds', {});
-
   var root = $('cats');
   root.replaceChildren();
-  groupOrder.forEach(function (g) {
-    var box = document.createElement('div');
-    if (grouped) {
-      var sub = 0;
-      byGroup[g].forEach(function (c) { sub += s.totals[c.name] || 0; });
-      var head = document.createElement('div'); head.className = 'group-head';
-      var chev = document.createElement('span'); chev.className = 'chev';
-      chev.textContent = folds[g] ? '▸' : '▾';
-      var gname = document.createElement('span'); gname.className = 'g-name';
-      gname.textContent = g || '其他';
-      var gsub = document.createElement('span'); gsub.className = 'g-sub';
-      var gb = document.createElement('b'); gb.textContent = sub.toLocaleString();
-      gsub.appendChild(document.createTextNode('今日 ')); gsub.appendChild(gb);
-      head.appendChild(chev); head.appendChild(gname); head.appendChild(gsub);
-      head.onclick = function () {
-        folds[g] = !folds[g];
-        save('bs_folds', folds);
-        render();
-      };
-      root.appendChild(head);
-      if (folds[g]) return; // 折叠中,只显示组标题
-    }
-    byGroup[g].forEach(function (c) { box.appendChild(buildCard(c, s)); });
-    root.appendChild(box);
-  });
+  s.categories.forEach(function (c) { root.appendChild(buildCard(c, s)); });
 
   renderLists(s);
-}
-
-function buildCard(c, s) {
-    var card = document.createElement('div'); card.className = 'card';
-    var head = document.createElement('div'); head.className = 'cat-head';
-    var name = document.createElement('div'); name.className = 'cat-name'; name.textContent = c.name;
-    var total = document.createElement('div'); total.className = 'cat-total';
-    var tb = document.createElement('b'); tb.textContent = (s.totals[c.name] || 0).toLocaleString();
-    total.appendChild(document.createTextNode('今日 ')); total.appendChild(tb);
-    head.appendChild(name); head.appendChild(total);
-    card.appendChild(head);
-
-    var chips = document.createElement('div'); chips.className = 'chips';
-    c.quick.forEach(function (v) {
-      var btn = document.createElement('button');
-      btn.textContent = '+' + v.toLocaleString();
-      btn.onclick = function () { add(c.name, v); };
-      chips.appendChild(btn);
-    });
-    var custom = document.createElement('button');
-    custom.className = 'custom'; custom.textContent = '…';
-    chips.appendChild(custom);
-    card.appendChild(chips);
-
-    var customRow = document.createElement('div'); customRow.className = 'custom-row';
-    var input = document.createElement('input');
-    input.type = 'number'; input.min = '1'; input.inputMode = 'numeric';
-    input.placeholder = '输入数量';
-    var ok = document.createElement('button'); ok.textContent = '记入';
-    ok.onclick = function () {
-      var v = parseInt(input.value, 10);
-      if (!v || v <= 0) { toast('请输入正整数'); return; }
-      input.value = '';
-      add(c.name, v);
-    };
-    customRow.appendChild(input); customRow.appendChild(ok);
-    card.appendChild(customRow);
-    custom.onclick = function () {
-      customRow.classList.toggle('open');
-      if (customRow.classList.contains('open')) input.focus();
-    };
-    return card;
 }
 
 function renderLists(s) {
@@ -353,7 +362,25 @@ function renderLists(s) {
     var row = document.createElement('div'); row.className = 'recent-row';
     var left = document.createElement('span');
     left.textContent = r.cat + ' +' + r.count.toLocaleString() + (r.pending ? ' ⏳' : '');
-    var right = document.createElement('span'); right.className = 't'; right.textContent = r.time;
+    var right = document.createElement('span'); right.className = 'recent-right';
+    var t = document.createElement('span'); t.className = 't'; t.textContent = r.time;
+    var del = document.createElement('button'); del.className = 'row-del'; del.textContent = '✕';
+    del.onclick = function (evt) {
+      evt.stopPropagation();
+      if (!del.dataset.armed) {
+        del.dataset.armed = '1';
+        del.classList.add('armed');
+        del.textContent = '确认删除';
+        setTimeout(function () {
+          delete del.dataset.armed;
+          del.classList.remove('armed');
+          del.textContent = '✕';
+        }, 3000);
+        return;
+      }
+      deleteEntry(r);
+    };
+    right.appendChild(t); right.appendChild(del);
     row.appendChild(left); row.appendChild(right);
     list.appendChild(row);
   });
@@ -372,15 +399,78 @@ function renderLists(s) {
   ta.rows = Math.max(3, lines.length);
 }
 
+// ---------- 报数页 ----------
+function showInput(catName) {
+  var s = effective();
+  if (!s.categories.length) { toast('功课列表还没同步,请先联网打开一次'); return; }
+  if (catName) selectedCat = catName;
+  if (!selectedCat || !s.categories.some(function (c) { return c.name === selectedCat; })) {
+    selectedCat = s.categories[0].name;
+  }
+  var t = todayKey().split('/');
+  $('entryDate').value = t[0] + '-' + t[1] + '-' + t[2];
+  $('entryCount').value = '';
+  renderInputView();
+  $('main').classList.add('hidden');
+  $('fabBar').classList.add('hidden');
+  $('inputView').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function renderInputView() {
+  var s = effective();
+  var cloud = $('catChips');
+  cloud.replaceChildren();
+  s.categories.forEach(function (c) {
+    var chip = document.createElement('button');
+    chip.className = 'cat-chip' + (c.name === selectedCat ? ' selected' : '');
+    chip.textContent = c.name;
+    chip.onclick = function () { selectedCat = c.name; renderInputView(); };
+    cloud.appendChild(chip);
+  });
+
+  var qc = $('quickChips');
+  qc.replaceChildren();
+  var cat = null;
+  s.categories.forEach(function (c) { if (c.name === selectedCat) cat = c; });
+  ((cat && cat.quick) || []).forEach(function (v) {
+    var btn = document.createElement('button');
+    btn.textContent = v.toLocaleString();
+    btn.onclick = function () { $('entryCount').value = v; };
+    qc.appendChild(btn);
+  });
+}
+
+function showHome() {
+  $('inputView').classList.add('hidden');
+  $('main').classList.remove('hidden');
+  $('fabBar').classList.remove('hidden');
+  render();
+  window.scrollTo(0, 0);
+}
+
+$('fabBtn').onclick = function () { showInput(); };
+$('backBtn').onclick = showHome;
+$('submitEntry').onclick = function () {
+  var v = parseInt($('entryCount').value, 10);
+  if (!selectedCat) { toast('请先选择功课'); return; }
+  if (!v || v <= 0) { toast('请输入正整数'); return; }
+  var dv = $('entryDate').value; // yyyy-mm-dd
+  var dateKey = /^\d{4}-\d{2}-\d{2}$/.test(dv) ? dv.replace(/-/g, '/') : todayKey();
+  add(selectedCat, v, dateKey);
+  showHome();
+};
+
 // ---------- 记数与同步 ----------
 function newId() {
   return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
 }
 
-function add(cat, n) {
-  queue.push({ id: newId(), cat: cat, count: n, ts: Date.now() });
+function add(cat, n, dateKey) {
+  queue.push({ id: newId(), cat: cat, count: n, ts: Date.now(), date: dateKey || todayKey() });
   save('bs_queue', queue);
-  toast(cat + ' +' + n.toLocaleString());
+  var suffix = (dateKey && dateKey !== todayKey()) ? '(' + dateKey + ')' : '';
+  toast(cat + ' +' + n.toLocaleString() + suffix);
   render();
   flush();
 }
@@ -417,39 +507,24 @@ function refreshState() {
   }).catch(function (err) { console.error(err); });
 }
 
-// ---------- 撤销(两次点击确认) ----------
-var undoArmed = null;
-$('undoBtn').onclick = function () {
-  var s = effective();
-  if (!s.recent.length) return;
-  var r = s.recent[0];
-  if (!undoArmed) {
-    $('undoBtn').textContent = '再点一次,撤销「' + r.cat + ' +' + r.count.toLocaleString() + '」';
-    undoArmed = setTimeout(function () {
-      undoArmed = null;
-      $('undoBtn').textContent = '撤销最后一笔';
-    }, 3000);
-    return;
-  }
-  clearTimeout(undoArmed); undoArmed = null;
-  $('undoBtn').textContent = '撤销最后一笔';
-
-  if (queue.length) {
+// ---------- 删除任意一笔 ----------
+function deleteEntry(r) {
+  if (r.pending) {
     // 还没同步出去,直接从本地队列删掉
-    queue.pop();
+    queue = queue.filter(function (q) { return q.id !== r.id; });
     save('bs_queue', queue);
-    toast('已撤销');
+    toast('已删除');
     render();
   } else if (navigator.onLine) {
-    api('undo').then(function (res) {
+    api('delete', { id: r.id }).then(function (res) {
       server = res; save('bs_server', server);
-      toast('已撤销');
+      toast('已删除');
       render();
-    }).catch(function () { toast('撤销失败,请重试'); });
+    }).catch(function () { toast('删除失败,请重试'); });
   } else {
-    toast('这笔已同步,需要有网络才能撤销');
+    toast('这笔已同步,需要有网络才能删除');
   }
-};
+}
 
 // ---------- 复制汇总 ----------
 $('copyBtn').onclick = function () {
@@ -471,11 +546,9 @@ $('copyBtn').onclick = function () {
 function showSetup() {
   $('setupCard').classList.remove('hidden');
   $('main').classList.add('hidden');
+  $('inputView').classList.add('hidden');
+  $('fabBar').classList.add('hidden');
   if (cfg) { $('cfgUrl').value = cfg.url; $('cfgToken').value = cfg.token; }
-}
-function showMain() {
-  $('setupCard').classList.add('hidden');
-  $('main').classList.remove('hidden');
 }
 $('settingsBtn').onclick = showSetup;
 $('cfgSave').onclick = function () {
@@ -489,8 +562,8 @@ $('cfgSave').onclick = function () {
     save('bs_cfg', cfg);
     server = res; save('bs_server', server);
     $('cfgSave').textContent = '保存并连接';
-    showMain();
-    render();
+    $('setupCard').classList.add('hidden');
+    showHome();
     flush();
     toast('连接成功');
   }).catch(function (err) {
@@ -514,8 +587,7 @@ if ('serviceWorker' in navigator) {
 if (!cfg) {
   showSetup();
 } else {
-  showMain();
-  render();
+  showHome();
   flush();
 }
 </script>
