@@ -1,5 +1,5 @@
 /* 每日报数 PWA — Service Worker: 缓存应用外壳,离线也能打开 */
-var CACHE = 'baoshu-shell-v1';
+var CACHE = 'baoshu-shell-v2';
 var ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './apple-touch-icon.png'];
 
 self.addEventListener('install', function (e) {
