@@ -221,14 +221,15 @@ function toast(msg) {
   toast._h = setTimeout(function () { t.style.display = 'none'; }, 1800);
 }
 
-// ---------- 日期(北京时间) ----------
+// ---------- 日期(需与 Code.gs 里的 TZ 保持一致) ----------
+var TZ = 'Australia/Sydney';
 function dateKeyOf(ms) {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai' })
+  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ })
     .format(new Date(ms)).replace(/-/g, '/');
 }
 function todayKey() { return dateKeyOf(Date.now()); }
 function timeOf(ms) {
-  return new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', hour12: false })
+  return new Intl.DateTimeFormat('zh-CN', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false })
     .format(new Date(ms));
 }
 
