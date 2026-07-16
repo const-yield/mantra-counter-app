@@ -81,12 +81,6 @@ h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px;
   font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 7px;
 }
 .row-del.armed { border-color: #d03b3b; color: #d03b3b; }
-#summaryText {
-  width: 100%; font: inherit; font-size: 13px; line-height: 1.6;
-  background: transparent; color: var(--ink-2); border: none; resize: none;
-}
-.foot-actions { display: flex; gap: 8px; margin-top: 8px; }
-.foot-actions button { flex: 1; background: var(--accent); color: var(--accent-ink); }
 .setup label { display: block; font-size: 13px; color: var(--ink-2); margin: 10px 0 4px; }
 .setup input { width: 100%; }
 .setup .go { width: 100%; margin-top: 14px; background: var(--accent); color: var(--accent-ink); }
@@ -132,7 +126,7 @@ h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px;
 </style>
 </head>
 <body>
-<header>
+<header id="topBar">
   <div><h1>每日报数</h1><div id="dateLabel"></div></div>
   <div style="display:flex;align-items:baseline">
     <div id="grandTotal"></div>
@@ -159,14 +153,6 @@ h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px;
   <div class="card" id="recentCard" style="display:none">
     <h2>今天最近几笔(✕ 可删除)</h2>
     <div id="recentList"></div>
-  </div>
-
-  <div class="card" id="summaryCard" style="display:none">
-    <h2>今日汇总</h2>
-    <textarea id="summaryText" rows="4" readonly></textarea>
-    <div class="foot-actions">
-      <button id="copyBtn">复制汇总</button>
-    </div>
   </div>
 </div>
 
@@ -291,9 +277,11 @@ function renderSyncBar() {
       queue.length ? '离线中,' + queue.length + ' 笔已存手机,恢复网络后自动同步' : '离线中,记数会先存在手机里'));
   } else if (queue.length) {
     bar.className = 'pending';
-    bar.appendChild(document.createTextNode(queue.length + ' 笔待同步 '));
+    var msg = queue.length + ' 笔待同步';
+    if (flush.lastError) msg += '(上次失败: ' + flush.lastError + ')';
+    bar.appendChild(document.createTextNode(msg + ' '));
     var btn = document.createElement('button');
-    btn.textContent = '立即同步';
+    btn.textContent = syncing ? '同步中…' : '立即同步';
     btn.onclick = function () { flush(); };
     bar.appendChild(btn);
   } else {
@@ -385,19 +373,6 @@ function renderLists(s) {
     row.appendChild(left); row.appendChild(right);
     list.appendChild(row);
   });
-
-  var lines = [];
-  s.categories.forEach(function (c) {
-    if (s.totals[c.name]) lines.push(c.name + ' ' + s.totals[c.name]);
-  });
-  Object.keys(s.totals).forEach(function (k) {
-    var known = s.categories.some(function (c) { return c.name === k; });
-    if (!known && s.totals[k]) lines.push(k + ' ' + s.totals[k]);
-  });
-  $('summaryCard').style.display = lines.length ? '' : 'none';
-  var ta = $('summaryText');
-  ta.value = lines.join('\n');
-  ta.rows = Math.max(3, lines.length);
 }
 
 // ---------- 报数页 ----------
@@ -412,6 +387,7 @@ function showInput(catName) {
   $('entryDate').value = t[0] + '-' + t[1] + '-' + t[2];
   $('entryCount').value = '';
   renderInputView();
+  $('topBar').classList.add('hidden'); // 报数页寸土寸金,从同步状态条开始显示
   $('main').classList.add('hidden');
   $('fabBar').classList.add('hidden');
   $('inputView').classList.remove('hidden');
@@ -444,6 +420,7 @@ function renderInputView() {
 
 function showHome() {
   $('inputView').classList.add('hidden');
+  $('topBar').classList.remove('hidden');
   $('main').classList.remove('hidden');
   $('fabBar').classList.remove('hidden');
   render();
@@ -491,12 +468,15 @@ function flush() {
       save('bs_queue', queue);
       server = res; save('bs_server', server);
       syncing = false;
+      flush.lastError = null;
       render();
       if (queue.length) flush();
     })
     .catch(function (err) {
       syncing = false;
+      flush.lastError = (err && err.message) || '网络错误';
       renderSyncBar();
+      toast('同步失败: ' + flush.lastError);
       console.error(err);
     });
 }
@@ -528,25 +508,10 @@ function deleteEntry(r) {
   }
 }
 
-// ---------- 复制汇总 ----------
-$('copyBtn').onclick = function () {
-  var ta = $('summaryText');
-  var done = function () { toast('已复制'); };
-  var fallback = function () {
-    ta.focus(); ta.select(); ta.setSelectionRange(0, ta.value.length);
-    try { document.execCommand('copy'); done(); }
-    catch (e) { toast('请长按文本框手动复制'); }
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(ta.value).then(done, fallback);
-  } else {
-    fallback();
-  }
-};
-
 // ---------- 设置 ----------
 function showSetup() {
   $('setupCard').classList.remove('hidden');
+  $('topBar').classList.remove('hidden');
   $('main').classList.add('hidden');
   $('inputView').classList.add('hidden');
   $('fabBar').classList.add('hidden');
