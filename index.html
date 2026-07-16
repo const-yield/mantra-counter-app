@@ -89,21 +89,23 @@ h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px;
   background: transparent; border: none; color: var(--ink-3);
   padding: 0 0 0 10px; font-size: 16px; font-weight: 400;
 }
-/* 报数页 */
+/* 报数页(间距整体收紧,保证返回/报数按钮一屏可见) */
 .input-field, .setup input {
-  width: 100%; min-width: 0; font: inherit; font-size: 16px; padding: 10px 12px;
+  width: 100%; min-width: 0; font: inherit; font-size: 16px; padding: 8px 12px;
   border: 1px solid var(--hairline); border-radius: 10px;
   background: var(--surface); color: var(--ink-1);
 }
-.chip-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
+#inputView .card { padding: 9px 12px; margin-bottom: 8px; }
+#inputView h2 { margin-bottom: 6px; }
+.chip-cloud { display: flex; flex-wrap: wrap; gap: 7px; }
 .cat-chip {
   background: transparent; border: 1px solid var(--hairline); color: var(--ink-1);
-  border-radius: 18px; padding: 8px 14px; font-weight: 500; font-size: 14px;
+  border-radius: 16px; padding: 6px 12px; font-weight: 500; font-size: 14px;
 }
 .cat-chip.selected { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-.quick-chips button { flex: 1 1 72px; min-width: 72px; }
-.input-actions { display: flex; gap: 10px; margin-top: 4px; }
+.quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.quick-chips button { flex: 1 1 72px; min-width: 72px; padding: 8px 0; }
+.input-actions { display: flex; gap: 10px; margin-top: 0; }
 .input-actions .ghost { flex: 0 0 96px; background: transparent; border: 1px solid var(--hairline); color: var(--ink-2); font-weight: 500; }
 .input-actions #submitEntry { flex: 1; background: var(--accent); color: var(--accent-ink); font-size: 16px; letter-spacing: 0.3em; text-indent: 0.3em; }
 /* 底部固定报数按钮 */
