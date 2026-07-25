@@ -153,7 +153,7 @@ h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px;
   <div id="cats"></div>
 
   <div class="card" id="recentCard" style="display:none">
-    <h2>今天最近几笔(✕ 可删除)</h2>
+    <h2>今天的报数(✕ 可删除)</h2>
     <div id="recentList"></div>
   </div>
 </div>
@@ -247,16 +247,15 @@ function effective() {
     if (entryDate(q) === today) totals[q.cat] = (totals[q.cat] || 0) + q.count;
   });
 
+  // 今天全部报数都列出来(待同步的 + 已同步的),不再只截取最近几笔
   var recent = [];
-  for (var i = queue.length - 1; i >= 0 && recent.length < 6; i--) {
+  for (var i = queue.length - 1; i >= 0; i--) {
     if (entryDate(queue[i]) === today) {
       recent.push({ id: queue[i].id, time: timeOf(queue[i].ts), cat: queue[i].cat, count: queue[i].count, pending: true });
     }
   }
   if (server && server.date === today) {
-    server.recent.forEach(function (r) {
-      if (recent.length < 6) recent.push(r);
-    });
+    server.recent.forEach(function (r) { recent.push(r); });
   }
 
   // 累计 = 服务端累计(历史基数+已同步) + 本地待同步
