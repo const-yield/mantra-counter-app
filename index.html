@@ -52,8 +52,6 @@ h1 { font-size: 17px; font-weight: 650; }
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 12px; padding: 12px 14px; margin-bottom: 10px;
 }
-.cat-card { cursor: pointer; }
-.cat-card:active { transform: scale(0.99); }
 .cat-head { display: flex; justify-content: space-between; align-items: baseline; }
 .cat-name { font-weight: 600; display: flex; align-items: center; gap: 8px; min-width: 0; }
 .badge {
@@ -62,9 +60,10 @@ h1 { font-size: 17px; font-weight: 650; }
   white-space: nowrap; flex: none;
 }
 .cat-cum { font-size: 12px; color: var(--ink-3); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.cat-entries { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--hairline); }
+.cat-entries .recent-row:not(:first-child) { border-top: 1px solid var(--hairline); }
 .cat-total { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 14px; white-space: nowrap; }
 .cat-total b { color: var(--ink-1); font-size: 16px; }
-.cat-total .chev { color: var(--ink-3); margin-left: 6px; }
 button {
   font: inherit; border: none; cursor: pointer; border-radius: 10px;
   padding: 10px 0; font-weight: 600; font-size: 15px;
@@ -148,14 +147,9 @@ h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px;
   <div class="hint">部署方法见仓库里的 README。配置只保存在本机浏览器里,不会上传到任何地方。</div>
 </div>
 
-<!-- 主界面: 概览 -->
+<!-- 主界面: 概览。每张功课卡片自带当天报数明细,点 ✕ 可删除任意一笔 -->
 <div id="main" class="hidden">
   <div id="cats"></div>
-
-  <div class="card" id="recentCard" style="display:none">
-    <h2>今天的报数(✕ 可删除)</h2>
-    <div id="recentList"></div>
-  </div>
 </div>
 
 <!-- 报数页: 输入集中在一处 -->
@@ -291,8 +285,37 @@ function renderSyncBar() {
   }
 }
 
+/** 一笔报数的展示行(时间 + 数量 + ✕ 删除),卡片内的明细行和"其他"卡片都用它 */
+function buildEntryRow(r, opts) {
+  var row = document.createElement('div'); row.className = 'recent-row';
+  var left = document.createElement('span');
+  var prefix = (opts && opts.showCat) ? r.cat + ' ' : '';
+  left.textContent = prefix + '+' + r.count.toLocaleString() + (r.pending ? ' ⏳' : '');
+  var right = document.createElement('span'); right.className = 'recent-right';
+  var t = document.createElement('span'); t.className = 't'; t.textContent = r.time;
+  var del = document.createElement('button'); del.className = 'row-del'; del.textContent = '✕';
+  del.onclick = function (evt) {
+    evt.stopPropagation(); // 别触发卡片本身的点击(会跳去报数页)
+    if (!del.dataset.armed) {
+      del.dataset.armed = '1';
+      del.classList.add('armed');
+      del.textContent = '确认删除';
+      setTimeout(function () {
+        delete del.dataset.armed;
+        del.classList.remove('armed');
+        del.textContent = '✕';
+      }, 3000);
+      return;
+    }
+    deleteEntry(r);
+  };
+  right.appendChild(t); right.appendChild(del);
+  row.appendChild(left); row.appendChild(right);
+  return row;
+}
+
 function buildCard(c, s) {
-  var card = document.createElement('div'); card.className = 'card cat-card';
+  var card = document.createElement('div'); card.className = 'card';
   var todayCount = s.totals[c.name] || 0;
 
   var head = document.createElement('div'); head.className = 'cat-head';
@@ -307,8 +330,6 @@ function buildCard(c, s) {
   var total = document.createElement('div'); total.className = 'cat-total';
   var tb = document.createElement('b'); tb.textContent = todayCount.toLocaleString();
   total.appendChild(document.createTextNode('今日 ')); total.appendChild(tb);
-  var chev = document.createElement('span'); chev.className = 'chev'; chev.textContent = '›';
-  total.appendChild(chev);
   head.appendChild(name); head.appendChild(total);
   card.appendChild(head);
 
@@ -316,7 +337,26 @@ function buildCard(c, s) {
   cum.textContent = '累计 ' + (s.cum[c.name] || 0).toLocaleString();
   card.appendChild(cum);
 
-  card.onclick = function () { showInput(c.name); };
+  // 今天这项功课的每一笔,直接列在卡片里,方便找到并删除任意一笔
+  var entries = s.recent.filter(function (r) { return r.cat === c.name; });
+  if (entries.length) {
+    var box = document.createElement('div'); box.className = 'cat-entries';
+    entries.forEach(function (r) { box.appendChild(buildEntryRow(r)); });
+    card.appendChild(box);
+  }
+
+  return card;
+}
+
+/**
+ * 兜底卡片: 万一某笔记录的类别名和「类别」tab 里现有的功课都对不上
+ * (比如改名/删除功课后留下的旧记录),也不会被悄悄藏起来。
+ */
+function buildOrphanCard(entries) {
+  var card = document.createElement('div'); card.className = 'card';
+  var h = document.createElement('h2'); h.textContent = '其他(类别名与当前功课不匹配)';
+  card.appendChild(h);
+  entries.forEach(function (r) { card.appendChild(buildEntryRow(r, { showCat: true })); });
   return card;
 }
 
@@ -339,41 +379,14 @@ function render() {
 
   var root = $('cats');
   root.replaceChildren();
-  s.categories.forEach(function (c) { root.appendChild(buildCard(c, s)); });
-
-  renderLists(s);
-}
-
-function renderLists(s) {
-  $('recentCard').style.display = s.recent.length ? '' : 'none';
-  var list = $('recentList');
-  list.replaceChildren();
-  s.recent.forEach(function (r) {
-    var row = document.createElement('div'); row.className = 'recent-row';
-    var left = document.createElement('span');
-    left.textContent = r.cat + ' +' + r.count.toLocaleString() + (r.pending ? ' ⏳' : '');
-    var right = document.createElement('span'); right.className = 'recent-right';
-    var t = document.createElement('span'); t.className = 't'; t.textContent = r.time;
-    var del = document.createElement('button'); del.className = 'row-del'; del.textContent = '✕';
-    del.onclick = function (evt) {
-      evt.stopPropagation();
-      if (!del.dataset.armed) {
-        del.dataset.armed = '1';
-        del.classList.add('armed');
-        del.textContent = '确认删除';
-        setTimeout(function () {
-          delete del.dataset.armed;
-          del.classList.remove('armed');
-          del.textContent = '✕';
-        }, 3000);
-        return;
-      }
-      deleteEntry(r);
-    };
-    right.appendChild(t); right.appendChild(del);
-    row.appendChild(left); row.appendChild(right);
-    list.appendChild(row);
+  var known = {};
+  s.categories.forEach(function (c) {
+    known[c.name] = true;
+    root.appendChild(buildCard(c, s));
   });
+
+  var orphans = s.recent.filter(function (r) { return !known[r.cat]; });
+  if (orphans.length) root.appendChild(buildOrphanCard(orphans));
 }
 
 // ---------- 报数页 ----------
