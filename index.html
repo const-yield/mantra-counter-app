@@ -380,7 +380,13 @@ function render() {
   var root = $('cats');
   root.replaceChildren();
   var known = {};
-  s.categories.forEach(function (c) {
+  // 未报数的排前面,已报数的沉到后面;两组各自内部保持「类别」tab 里的原始顺序
+  var ordered = s.categories.slice().sort(function (a, b) {
+    var doneA = (s.totals[a.name] || 0) > 0 ? 1 : 0;
+    var doneB = (s.totals[b.name] || 0) > 0 ? 1 : 0;
+    return doneA - doneB;
+  });
+  ordered.forEach(function (c) {
     known[c.name] = true;
     root.appendChild(buildCard(c, s));
   });
