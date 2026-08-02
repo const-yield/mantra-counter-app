@@ -101,6 +101,7 @@ h2 { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px;
   background: transparent; border: 1px solid var(--hairline); color: var(--ink-1);
   border-radius: 16px; padding: 6px 12px; font-weight: 500; font-size: 14px;
 }
+.cat-chip.reported { background: var(--hairline); border-color: var(--hairline); color: var(--ink-3); }
 .cat-chip.selected { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .quick-chips button { flex: 1 1 72px; min-width: 72px; padding: 8px 0; }
@@ -420,7 +421,8 @@ function renderInputView() {
   cloud.replaceChildren();
   s.categories.forEach(function (c) {
     var chip = document.createElement('button');
-    chip.className = 'cat-chip' + (c.name === selectedCat ? ' selected' : '');
+    var reported = (s.totals[c.name] || 0) > 0;
+    chip.className = 'cat-chip' + (reported ? ' reported' : '') + (c.name === selectedCat ? ' selected' : '');
     chip.textContent = c.name;
     chip.onclick = function () { selectedCat = c.name; renderInputView(); };
     cloud.appendChild(chip);
