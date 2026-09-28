@@ -432,12 +432,15 @@ function renderInputView() {
   qc.replaceChildren();
   var cat = null;
   s.categories.forEach(function (c) { if (c.name === selectedCat) cat = c; });
-  ((cat && cat.quick) || []).forEach(function (v) {
+  var quick = (cat && cat.quick) || [];
+  quick.forEach(function (v) {
     var btn = document.createElement('button');
     btn.textContent = v.toLocaleString();
     btn.onclick = function () { $('entryCount').value = v; };
     qc.appendChild(btn);
   });
+  // 选中功课后直接把第一个常用数量填进输入框,省得每次都要点一下
+  $('entryCount').value = quick.length ? quick[0] : '';
 }
 
 function showHome() {
@@ -459,7 +462,7 @@ $('submitEntry').onclick = function () {
   var dateKey = /^\d{4}-\d{2}-\d{2}$/.test(dv) ? dv.replace(/-/g, '/') : todayKey();
   add(selectedCat, v, dateKey);
   // 报完留在本页,方便连续报下一项;点「返回」才回主页
-  $('entryCount').value = '';
+  renderInputView(); // 刷新胶囊的已报状态,并重新预填默认数量
 };
 
 // ---------- 记数与同步 ----------
